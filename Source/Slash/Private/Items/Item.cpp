@@ -23,11 +23,13 @@ void AItem::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, FString("Item OnScreen Message"));
 	}*/
 
+	/*SetActorLocation(FVector(0.f, 0.f, 50.f));
+	SetActorRotation(FRotator(0.f, 45.f, 90.f));*/
 	
-	DRAW_SPHERE(GetActorLocation());
+	/*DRAW_SPHERE(GetActorLocation());*/
 	/*DRAW_LINE(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
 	DRAW_POINT(GetActorLocation() + GetActorForwardVector() * 100.f);*/
-	DRAW_VECTOR(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
+	/*DRAW_VECTOR(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);*/
 }
 
 void AItem::Tick(float DeltaTime)
@@ -54,5 +56,13 @@ void AItem::Tick(float DeltaTime)
 		FString Message = FString::Printf(TEXT("Item Name: %s"), *Name);
 		GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, Message);
 	}*/
+
+	float MovementRate = 50.f;
+	float RotationRate = 45.f;
+
+	AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
+	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
+	DRAW_SPHERE_SingleFrame(GetActorLocation());
+	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
 }
 
