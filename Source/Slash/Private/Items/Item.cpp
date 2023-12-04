@@ -8,6 +8,8 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	RootComponent = ItemMesh;
 }
 
 void AItem::BeginPlay()
@@ -30,6 +32,18 @@ void AItem::BeginPlay()
 	/*DRAW_LINE(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
 	DRAW_POINT(GetActorLocation() + GetActorForwardVector() * 100.f);*/
 	/*DRAW_VECTOR(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);*/
+
+
+}
+
+float AItem::TransformedSin()
+{
+	return Amplitude * FMath::Sin(RunningTime * TimeConstant);
+}
+
+float AItem::TransformedCos()
+{
+	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
 }
 
 void AItem::Tick(float DeltaTime)
@@ -57,12 +71,18 @@ void AItem::Tick(float DeltaTime)
 		GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, Message);
 	}*/
 
-	float MovementRate = 50.f;
+	/*float MovementRate = 50.f;
 	float RotationRate = 45.f;
 
 	AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
-	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
-	DRAW_SPHERE_SingleFrame(GetActorLocation());
-	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
+	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));*/
+
+	RunningTime += DeltaTime;
+
+	/*float DeltaZ = TransformedSin(RunningTime);
+	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));*/
+
+	/*DRAW_SPHERE_SingleFrame(GetActorLocation());
+	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);*/
 }
 
