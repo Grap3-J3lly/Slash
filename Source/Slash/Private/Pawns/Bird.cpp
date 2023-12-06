@@ -2,11 +2,13 @@
 
 
 #include "Pawns/Bird.h"
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 ABird::ABird()
 {
@@ -18,6 +20,13 @@ ABird::ABird()
 
 	BirdMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BirdMesh"));
 	BirdMesh->SetupAttachment(GetRootComponent());
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->TargetArmLength = 300.f;
+
+	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
+	ViewCamera->SetupAttachment(SpringArm);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
@@ -36,6 +45,7 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABird::Look);
 	}
 }
 
@@ -54,16 +64,24 @@ void ABird::BeginPlay()
 	}
 }
 
-void ABird::MoveForward(float Value)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Value: %f"), Value);
-}
-
 void ABird::Move(const FInputActionValue& Value)
 {
-	const bool CurrentValue = Value.Get<bool>();
-	if (CurrentValue)
+	const float DirectionValue = Value.Get<float>();
+
+	if (GetController() && (DirectionValue != 0.f))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("IA_Move Triggered"));
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, DirectionValue);
+	}
+}
+
+void ABird::Look(const FInputActionValue& Value)
+{
+	const FVector2D LookAxisValue = Value.Get<FVector2D>();
+
+	if (GetController())
+	{
+		AddControllerYawInput(LookAxisValue.X);
+		AddControllerPitchInput(LookAxisValue.Y);
 	}
 }
