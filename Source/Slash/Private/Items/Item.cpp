@@ -77,8 +77,11 @@ void AItem::Tick(float DeltaTime)
 
 	RunningTime += DeltaTime;
 
-	/*float DeltaZ = TransformedSin(RunningTime);
-	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));*/
+	if (ItemState == EItemState::EIS_Hovering)
+	{
+		AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
+
+	}
 
 	/*DRAW_SPHERE_SingleFrame(GetActorLocation());
 	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);*/
